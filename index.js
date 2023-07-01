@@ -54,7 +54,7 @@ app.get("/nssf/:memberId", async function checkBalance(req, res, next) {
   }
 });
 
-app.get("/api/v1/orders", checkLogin, async function order(req, res, next) {
+app.post("/api/v1/orders", checkLogin, async function order(req, res, next) {
   try {
     const message = req.body ? req.body : "Empty order sent!";
     console.log("############ ORDER RECEIVED #############");
