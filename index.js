@@ -5,11 +5,26 @@ config();
 import bodyParser from "body-parser";
 import axios from "axios";
 import cors from "cors";
+import basicAuth from "express-basic-auth";
 
 // Constants
 const app = Express();
 const port = process.env.PORT || 3000;
 const url = process.env.NSSF_URL;
+const basicAuth = require("express-basic-auth");
+
+// basic auth
+const invalidLoginResponse = {
+  status: 401,
+  success: false,
+  title: "LOGIN",
+  message: "Wrong username or password",
+};
+
+const checkLogin = basicAuth({
+  users: { testuser: process.env.DEMO_PASS },
+  unauthorizedResponse: invalidLoginResponse,
+});
 
 // Uses
 app.disable("x-powered-by");
@@ -36,6 +51,16 @@ app.get("/nssf/:memberId", async function checkBalance(req, res, next) {
     res
       .status(500)
       .json({ status: 500, success: false, message: error.message });
+  }
+});
+
+app.get("/api/v1/orders", checkLogin, async function order(req, res, next) {
+  try {
+    const message = req.body ? req.body : "Empty order sent!";
+    console.log("############ ORDER RECEIVED #############");
+    res.status(201).json({ status: 201, success: true, message: message });
+  } catch (error) {
+    console.error(error.message);
   }
 });
 
